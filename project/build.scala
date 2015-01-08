@@ -53,7 +53,7 @@ object build extends Build {
 
   val json4sSettings = mavenCentralFrouFrou ++ Seq(
     organization := "org.json4s",
-    scalaVersion := "2.10.0",
+    scalaVersion := "2.11.4",
     crossScalaVersions := Seq("2.10.0", "2.11.0"),
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-optimize", "-feature", "-Yinline-warnings", "-language:existentials", "-language:implicitConversions", "-language:higherKinds", "-language:reflectiveCalls", "-language:postfixOps"),
     version := "3.2.12-SNAPSHOT",
@@ -68,7 +68,7 @@ object build extends Build {
     id = "json4s",
     base = file("."),
     settings = json4sSettings
-  ) aggregate(core, native, json4sExt, jacksonSupport, scalazExt, json4sTests, mongo, ast, scalap)
+  ) aggregate(core, native, json4sExt, jacksonSupport, scalazExt, mongo, ast, scalap)// json4sTests
 
   lazy val ast = Project(
     id = "json4s-ast",
@@ -129,19 +129,19 @@ object build extends Build {
 //    settings = json4sSettings ++ Seq(libraryDependencies ++= jackson)
 //  ) dependsOn(core % "compile;test->test")
 
-  lazy val examples = Project(
-     id = "json4s-examples",
-     base = file("examples"),
-     settings = json4sSettings ++ SbtStartScript.startScriptForClassesSettings ++ Seq(
-       libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.0",
-       libraryDependencies += jacksonScala
-     )
-  ) dependsOn(
-    core % "compile;test->test",
-    native % "compile;test->test",
-    jacksonSupport % "compile;test->test",
-    json4sExt,
-    mongo)
+//  lazy val examples = Project(
+//     id = "json4s-examples",
+//     base = file("examples"),
+//     settings = json4sSettings ++ SbtStartScript.startScriptForClassesSettings ++ Seq(
+//       libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.0",
+//       libraryDependencies += jacksonScala
+//     )
+//  ) dependsOn(
+//    core % "compile;test->test",
+//    native % "compile;test->test",
+//    jacksonSupport % "compile;test->test",
+//    json4sExt,
+//    mongo)
 
 //
 //  lazy val jacksonExt = Project(
@@ -165,37 +165,37 @@ object build extends Build {
       )
   )) dependsOn(core % "compile;test->test")
 
-  lazy val json4sTests = Project(
-    id = "json4s-tests",
-    base = file("tests"),
-    settings = json4sSettings ++ Seq(
-      libraryDependencies ++= Seq(specs, scalacheck, mockito),
-      initialCommands in (Test, console) :=
-        """
-          |import org.json4s._
-          |import reflect._
-        """.stripMargin
-    )
-  ) dependsOn(core, native, json4sExt, scalazExt, jacksonSupport, mongo)
+//  lazy val json4sTests = Project(
+//    id = "json4s-tests",
+//    base = file("tests"),
+//    settings = json4sSettings ++ Seq(
+//      libraryDependencies ++= Seq(specs, scalacheck, mockito),
+//      initialCommands in (Test, console) :=
+//        """
+//          |import org.json4s._
+//          |import reflect._
+//        """.stripMargin
+//    )
+//  ) dependsOn(core, native, json4sExt, scalazExt, jacksonSupport, mongo)
 
-  lazy val benchmark = Project(
-    id = "json4s-benchmark",
-    base = file("benchmark"),
-    settings = json4sSettings ++ SbtStartScript.startScriptForClassesSettings ++ Seq(
-      cancelable := true,
-      libraryDependencies ++= Seq(
-        "com.google.code.java-allocation-instrumenter" % "java-allocation-instrumenter" % "2.0",
-        "com.google.caliper" % "caliper" % "0.5-rc1",
-        "com.google.code.gson" % "gson" % "1.7.1"
-      ),
-      libraryDependencies += jacksonScala,
-      runner in Compile in run <<= (thisProject, taskTemporaryDirectory, scalaInstance, baseDirectory, javaOptions, outputStrategy, javaHome, connectInput) map {
-        (tp, tmp, si, base, options, strategy, javaHomeDir, connectIn) =>
-          new MyRunner(tp.id, ForkOptions(javaHome = javaHomeDir, connectInput = connectIn, outputStrategy = strategy,
-            runJVMOptions = options, workingDirectory = Some(base)) )
-      }
-    )
-  ) dependsOn(core, native, jacksonSupport, json4sExt, mongo)
+//  lazy val benchmark = Project(
+//    id = "json4s-benchmark",
+//    base = file("benchmark"),
+//    settings = json4sSettings ++ SbtStartScript.startScriptForClassesSettings ++ Seq(
+//      cancelable := true,
+//      libraryDependencies ++= Seq(
+//        "com.google.code.java-allocation-instrumenter" % "java-allocation-instrumenter" % "2.0",
+//        "com.google.caliper" % "caliper" % "0.5-rc1",
+//        "com.google.code.gson" % "gson" % "1.7.1"
+//      ),
+//      libraryDependencies += jacksonScala,
+//      runner in Compile in run <<= (thisProject, taskTemporaryDirectory, scalaInstance, baseDirectory, javaOptions, outputStrategy, javaHome, connectInput) map {
+//        (tp, tmp, si, base, options, strategy, javaHomeDir, connectIn) =>
+//          new MyRunner(tp.id, ForkOptions(javaHome = javaHomeDir, connectInput = connectIn, outputStrategy = strategy,
+//            runJVMOptions = options, workingDirectory = Some(base)) )
+//      }
+//    )
+//  ) dependsOn(core, native, jacksonSupport, json4sExt, mongo)
 
 
 }

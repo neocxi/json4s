@@ -459,7 +459,10 @@ object Extraction {
           else x
         } catch {
           case e @ MappingException(msg, _) =>
-            if (descr.isOptional  && !formats.strictOptionParsing) defv(None) else fail("No usable value for " + descr.name + "\n" + msg, e)
+            if (descr.isOptional  && !formats.strictOptionParsing)
+              defv(None)
+            else
+              fail(s"Json: $json. No usable value for " + descr.name + "\n" + msg, e)
         }
       }
     }
@@ -492,10 +495,10 @@ object Extraction {
         }
       } catch {
         case e @ (_:IllegalArgumentException | _:InstantiationException) =>
-          fail("Parsed JSON values do not match with class constructor\nargs=" +
+          fail(s"JSON: $json. Parsed JSON values do not match with class constructor\nargs=" +
                args.mkString(",") + "\narg types=" + args.map(a => if (a != null)
                  a.asInstanceOf[AnyRef].getClass.getName else "null").mkString(",") +
-               "\nconstructor=" + jconstructor)
+               "\nconstructor=" + jconstructor + s"\nException: $e")
       }
     }
 
